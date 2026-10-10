@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Digital Solutions | Client Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+  <div class="flex h-screen overflow-hidden">
 
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 transition-all duration-300">
+      <!-- Logo & Brand -->
+      <div class="h-16 flex items-center px-6 gap-3 border-b border-slate-800">
+        <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+          A
+        </div>
+        <div>
+          <h1 class="text-white font-semibold text-sm leading-tight tracking-wide">Apex Digital</h1>
+          <p class="text-xs text-slate-400">Client Portal</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Dashboard</span>
+        </button>
+        <button onclick="switchTab('projects')" id="nav-projects" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+          <span>Projects</span>
+          <span class="ml-auto text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">3</span>
+        </button>
+        <button onclick="switchTab('documents')" id="nav-documents" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>Document Vault</span>
+        </button>
+        <button onclick="switchTab('tickets')" id="nav-tickets" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="life-buoy" class="w-4 h-4"></i>
+          <span>Support & Tickets</span>
+          <span class="ml-auto text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">1 New</span>
+        </button>
+        <button onclick="switchTab('invoices')" id="nav-invoices" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition">
+          <i data-lucide="credit-card" class="w-4 h-4"></i>
+          <span>Billing & Invoices</span>
+        </button>
+      </nav>
+
+      <!-- Account Profile Section -->
+      <div class="p-4 border-t border-slate-800">
+        <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/50">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/30" />
+          <div class="overflow-hidden">
+            <p class="text-xs font-medium text-white truncate">Sarah Jenkins</p>
+            <p class="text-[11px] text-slate-400 truncate">Acme Global Ltd.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Top Navbar -->
+      <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
+            Enterprise Client
+          </span>
+          <span class="text-sm text-slate-500">Account ID: <strong class="text-slate-700">#ACME-8921</strong></span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="showToast('You have 2 unread project updates.')" class="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 relative">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-600 rounded-full ring-2 ring-white"></span>
+          </button>
+          <button onclick="openModal('ticketModal')" class="flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>New Ticket</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main View -->
+      <main class="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50">
+        
+        <!-- TAB: DASHBOARD -->
+        <section id="tab-dashboard" class="space-y-8">
+          <div class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-indigo-800 rounded-2xl p-6 md:p-8 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-bold">Welcome back, Sarah! 👋</h2>
+              <p class="text-indigo-100 text-sm mt-1 max-w-xl">
+                Here is a summary of your ongoing projects, active deliverables, and account activity with Apex Digital.
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="switchTab('projects')" class="px-4 py-2 bg-white text-indigo-700 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition shadow-sm">
+                View Milestones
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase">Active Projects</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">3</p>
+                <span class="text-xs text-emerald-600 font-medium">● 2 on schedule</span>
+              </div>
+              <div class="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase">Documents</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">18</p>
+                <span class="text-xs text-slate-500">3 added this week</span>
+              </div>
+              <div class="w-11 h-11 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="folder-check" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase">Open Tickets</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">1</p>
+                <span class="text-xs text-amber-600 font-medium">In review by Lead Dev</span>
+              </div>
+              <div class="w-11 h-11 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="life-buoy" class="w-5 h-5"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase">Pending Invoices</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">$4,850</p>
+                <span class="text-xs text-rose-500 font-medium">Due in 5 days</span>
+              </div>
+              <div class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="credit-card" class="w-5 h-5"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-slate-800 text-base">Development Sprint Velocity</h3>
+                <span class="text-xs text-slate-400">Past 4 Sprints</span>
+              </div>
+              <div class="h-64">
+                <canvas id="velocityChart"></canvas>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+              <h3 class="font-semibold text-slate-800 text-base mb-4">Recent Updates</h3>
+              <div class="space-y-4 flex-1">
+                <div class="flex items-start gap-3">
+                  <div class="w-2 h-2 rounded-full bg-emerald-500 mt-2"></div>
+                  <div>
+                    <p class="text-xs font-medium text-slate-800">Sprint 4 Milestones Approved</p>
+                    <p class="text-[11px] text-slate-400">By Marcus Vance · 2 hours ago</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <div class="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                  <div>
+                    <p class="text-xs font-medium text-slate-800">Uploaded API Contract v2.1</p>
+                    <p class="text-[11px] text-slate-400">Document Vault · Yesterday</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <div class="w-2 h-2 rounded-full bg-indigo-500 mt-2"></div>
+                  <div>
+                    <p class="text-xs font-medium text-slate-800">Invoice #INV-2026-08 Generated</p>
+                    <p class="text-[11px] text-slate-400">Billing Department · 3 days ago</p>
+                  </div>
+                </div>
+              </div>
+              <button onclick="switchTab('projects')" class="mt-4 w-full py-2 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg text-center transition">
+                Check Detailed Status
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: PROJECTS -->
+        <section id="tab-projects" class="hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Active Deliverables</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Track real-time progress on your contracts and design sprints.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700">In Progress</span>
+                <span class="text-xs text-slate-400">Due Nov 15</span>
+              </div>
+              <h3 class="font-semibold text-slate-800 text-base">E-Commerce Web Platform</h3>
+              <p class="text-xs text-slate-500 mt-1 line-clamp-2">Complete frontend rebuild using Next.js with high-performance payment processing.</p>
+              
+              <div class="mt-5 space-y-2">
+                <div class="flex justify-between text-xs font-medium">
+                  <span class="text-slate-600">Progress</span>
+                  <span class="text-indigo-600">75%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-indigo-600 h-full rounded-full" style="width: 75%"></div>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Lead: <strong>David Clark</strong></span>
+                <button onclick="showToast('Milestone details opened.')" class="text-xs text-indigo-600 font-semibold hover:underline">Details &rarr;</button>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700">Client Review</span>
+                <span class="text-xs text-slate-400">Due Oct 28</span>
+              </div>
+              <h3 class="font-semibold text-slate-800 text-base">Cloud Infrastructure Migration</h3>
+              <p class="text-xs text-slate-500 mt-1 line-clamp-2">Terraform scripts and Kubernetes cluster deployment on AWS us-east-1.</p>
+              
+              <div class="mt-5 space-y-2">
+                <div class="flex justify-between text-xs font-medium">
+                  <span class="text-slate-600">Progress</span>
+                  <span class="text-amber-600">90%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 90%"></div>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Lead: <strong>Priya Patel</strong></span>
+                <button onclick="showToast('Approval submitted for Cloud Migration.')" class="text-xs text-indigo-600 font-semibold hover:underline">Review &rarr;</button>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow transition">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Completed</span>
+                <span class="text-xs text-slate-400">Delivered Sep 30</span>
+              </div>
+              <h3 class="font-semibold text-slate-800 text-base">Brand Identity & Design System</h3>
+              <p class="text-xs text-slate-500 mt-1 line-clamp-2">Complete vector asset pack, typography standards, and interactive UI library in Figma.</p>
+              
+              <div class="mt-5 space-y-2">
+                <div class="flex justify-between text-xs font-medium">
+                  <span class="text-slate-600">Progress</span>
+                  <span class="text-emerald-600">100%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-full rounded-full" style="width: 100%"></div>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-xs text-slate-500">Lead: <strong>Elena Rostova</strong></span>
+                <button onclick="switchTab('documents')" class="text-xs text-indigo-600 font-semibold hover:underline">Download Assets &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: DOCUMENTS -->
+        <section id="tab-documents" class="hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Secure Document Vault</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Access contracts, technical specifications, and project assets.</p>
+            </div>
+            <button onclick="showToast('Upload feature ready.')" class="flex items-center gap-2 px-3.5 py-2 text-xs font-medium bg-slate-900 text-white hover:bg-slate-800 rounded-lg transition">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+              <span>Upload Document</span>
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase font-semibold">
+                <tr>
+                  <th class="py-3 px-4">Document Name</th>
+                  <th class="py-3 px-4">Category</th>
+                  <th class="py-3 px-4">Size</th>
+                  <th class="py-3 px-4">Updated Date</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-4 font-medium flex items-center gap-2">
+                    <i data-lucide="file-check" class="w-4 h-4 text-indigo-600"></i>
+                    Master Services Agreement (MSA) - Signed.pdf
+                  </td>
+                  <td class="py-3.5 px-4 text-slate-500">Legal</td>
+                  <td class="py-3.5 px-4 text-slate-500">2.4 MB</td>
+                  <td class="py-3.5 px-4 text-slate-500">Oct 02, 2026</td>
+                  <td class="py-3.5 px-4 text-right">
+                    <button onclick="showToast('Downloading MSA document...')" class="text-indigo-600 hover:text-indigo-800 font-medium">Download</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-4 font-medium flex items-center gap-2">
+                    <i data-lucide="file-code" class="w-4 h-4 text-blue-600"></i>
+                    API Architecture & Security Specs v2.0.pdf
+                  </td>
+                  <td class="py-3.5 px-4 text-slate-500">Technical</td>
+                  <td class="py-3.5 px-4 text-slate-500">4.1 MB</td>
+                  <td class="py-3.5 px-4 text-slate-500">Oct 06, 2026</td>
+                  <td class="py-3.5 px-4 text-right">
+                    <button onclick="showToast('Downloading API specs...')" class="text-indigo-600 hover:text-indigo-800 font-medium">Download</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-4 font-medium flex items-center gap-2">
+                    <i data-lucide="image" class="w-4 h-4 text-emerald-600"></i>
+                    Brand Design Guidelines & Assets (ZIP).zip
+                  </td>
+                  <td class="py-3.5 px-4 text-slate-500">Design</td>
+                  <td class="py-3.5 px-4 text-slate-500">48.2 MB</td>
+                  <td class="py-3.5 px-4 text-slate-500">Sep 30, 2026</td>
+                  <td class="py-3.5 px-4 text-right">
+                    <button onclick="showToast('Downloading Design Asset ZIP...')" class="text-indigo-600 hover:text-indigo-800 font-medium">Download</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- TAB: TICKETS -->
+        <section id="tab-tickets" class="hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Support & Communication</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Submit questions, report issues, or communicate with your account manager.</p>
+            </div>
+            <button onclick="openModal('ticketModal')" class="flex items-center gap-2 px-3.5 py-2 text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg transition">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Create New Ticket</span>
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div class="flex items-start gap-4">
+                <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+                  <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-3">
+                    <h4 class="text-sm font-semibold text-slate-800">#TK-402: Production Webhook latency inquiry</h4>
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">In Progress</span>
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-rose-50 text-rose-600">High Priority</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Under review by Lead Engineer: "Investigating the Redis queue latency."</p>
+                  <p class="text-[11px] text-slate-400 mt-2">Opened 4 hours ago · 3 responses</p>
+                </div>
+              </div>
+              <button onclick="showToast('Opening ticket thread...')" class="text-xs text-indigo-600 font-semibold hover:underline">View Conversation</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: INVOICES -->
+        <section id="tab-invoices" class="hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Invoices & Billing</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Review statement history, paid receipts, and pending invoices.</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase font-semibold">
+                <tr>
+                  <th class="py-3 px-4">Invoice #</th>
+                  <th class="py-3 px-4">Billing Period</th>
+                  <th class="py-3 px-4">Amount</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-4 font-semibold text-slate-900">#INV-2026-08</td>
+                  <td class="py-3.5 px-4 text-slate-500">October 2026 (Sprint 4 Milestones)</td>
+                  <td class="py-3.5 px-4 font-bold text-slate-900">$4,850.00</td>
+                  <td class="py-3.5 px-4">
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">Due in 5 Days</span>
+                  </td>
+                  <td class="py-3.5 px-4 text-right">
+                    <button onclick="showToast('Redirecting to Stripe Checkout sandbox...')" class="px-3 py-1 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-700">Pay Now</button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-4 font-semibold text-slate-900">#INV-2026-07</td>
+                  <td class="py-3.5 px-4 text-slate-500">September 2026 (Design Phase)</td>
+                  <td class="py-3.5 px-4 font-bold text-slate-900">$6,200.00</td>
+                  <td class="py-3.5 px-4">
+                    <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">Paid</span>
+                  </td>
+                  <td class="py-3.5 px-4 text-right">
+                    <button onclick="showToast('Downloading receipt PDF...')" class="text-indigo-600 hover:text-indigo-800 font-medium">Receipt PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Create Support Ticket -->
+  <div id="ticketModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800 text-base">Open a Support Request</h3>
+        <button onclick="closeModal('ticketModal')" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleTicketSubmit(event)" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Subject</label>
+          <input id="ticketSubject" required type="text" placeholder="Brief description of the request..." class="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Priority</label>
+          <select class="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option>Normal Priority</option>
+            <option>High Priority</option>
+            <option>Critical / Blocker</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Details</label>
+          <textarea id="ticketBody" required rows="4" placeholder="Describe the issue or feedback in detail..." class="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('ticketModal')" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">Submit Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50">
+    Notification
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const tabs = ['dashboard', 'projects', 'documents', 'tickets', 'invoices'];
+    function switchTab(tabId) {
+      tabs.forEach(tab => {
+        const section = document.getElementById(`tab-${tab}`);
+        const navBtn = document.getElementById(`nav-${tab}`);
+        if (tab === tabId) {
+          section.classList.remove('hidden');
+          navBtn.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-indigo-600 text-white transition";
+        } else {
+          section.classList.add('hidden');
+          navBtn.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition";
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+        toast.classList.remove('opacity-100');
+      }, 3000);
+    }
+
+    function handleTicketSubmit(e) {
+      e.preventDefault();
+      const subject = document.getElementById('ticketSubject').value;
+      closeModal('ticketModal');
+      showToast(`Ticket created: "${subject}"`);
+      document.getElementById('ticketSubject').value = '';
+      document.getElementById('ticketBody').value = '';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('velocityChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Sprint 1 (Kickoff)', 'Sprint 2 (Core Arch)', 'Sprint 3 (APIs & UI)', 'Sprint 4 (Current)'],
+          datasets: [
+            {
+              label: 'Story Points Delivered',
+              data: [32, 45, 40, 52],
+              backgroundColor: '#6366f1',
+              borderRadius: 6
+            },
+            {
+              label: 'Planned Target',
+              data: [35, 42, 45, 50],
+              backgroundColor: '#e0e7ff',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
